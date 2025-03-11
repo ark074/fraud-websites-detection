@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="phishing url, phishing, cyber security, machine learning, classifier, python">
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
+    <title>Fraud URL Detection</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <style>
+        /* Body styling */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            height: 100%;
+            overflow-x: hidden;
+            color: white;
+            background-color: #000; /* Fallback background */
+        }
+        @font-face {
+  	font-family: myFirstFont;
+ 	 	 src: url(/static/SDGlitch_Demo.ttf);
+	}
+
+	div {
+  		font-family: myFirstFont;
+	}
+
+        /* Full-screen background video */
+        video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        /* Header (Form) Section */
+        .masthead {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1;
+        }
+
+        .masthead h1 {
+            font-size: 4.5rem;
+            font-weight: bold;
+            margin-bottom:0px;
+        }
+
+        .masthead p {
+            font-size: 1.55rem;
+            margin-bottom: 2px;
+        }
+
+        .masthead input[type="text"] {
+            padding: 15px;
+            border-radius: 15px;
+            border: none;
+            width: 60%;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            box-shadow: 0px 0px 10px rgba(0, 123, 255, 0.5);
+            outline: none;
+            max-width: 400px;
+        }
+
+        .masthead button {
+            background-color: transparent;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border-color: rgba(238, 67, 15, 0.771);
+        }
+
+        .masthead button:hover {
+            border-color: white;
+        }
+
+        #prediction {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 20px;
+	    font-family: ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+        }
+
+        /* Team Section */
+        .team-section {
+            padding: 100px 0;
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+
+        .team-section h2 {
+            color: #fff;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 50px;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .team-member {
+            text-align: center;
+            margin-bottom: 30px;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .circleborder {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, .8);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .circleborder img {
+            width: 100%;
+            height: auto;
+        }
+
+        .team-member h4 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 15px;
+            color: white;
+        }
+
+        .team-member p {
+            font-size: 1.2rem;
+            color: #bbb;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-icons img {
+            width: 35px;
+            height: 35px;
+            border-radius:50px;
+        }
+
+        .circleborder:hover {
+            transform: scale(1.1);
+        }
+	
+        footer {
+            background-color: rgba(0, 0, 0, 0.9);
+            color: grey;
+            text-align: center;
+            padding: 20px;
+        }
+
+        footer p {
+            margin: 0;
+        }
+        #button1{
+  appearance: button;
+  background-color: transparent;
+  background-image: linear-gradient(to bottom, rgb(160, 245, 174), #37ee65);
+  border: 0 solid #e5e7eb;
+  border-radius: .5rem;
+  box-sizing: border-box;
+  color: #482307;
+  column-gap: 1rem;
+  cursor: pointer;
+  display: flex;
+  font-family: ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  font-size: 100%;
+  font-weight: 700;
+  line-height: 24px;
+  margin-left: 495px;
+  outline: 2px solid transparent;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  text-transform: none;
+  transition: all .1s cubic-bezier(.4, 0, .2, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  box-shadow: -6px 8px 10px rgba(81,41,10,0.1),0px 2px 2px rgba(81,41,10,0.2);
+  display: none;
+}
+
+#button2{
+  appearance: button;
+  background-color: transparent;
+  background-image: linear-gradient(to bottom, rgb(252, 162, 162), #ee3737);
+  border: 0 solid #e5e7eb;
+  border-radius: .5rem;
+  box-sizing: border-box;
+  color: #482307;
+  column-gap: 1rem;
+  cursor: pointer;
+  display: flex;
+  font-family: ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  font-size: 100%;
+  font-weight: 700;
+  line-height: 24px;
+  margin-left: 450px;
+  outline: 2px solid transparent;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  text-transform: none;
+  transition: all .1s cubic-bezier(.4, 0, .2, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  box-shadow: -6px 8px 10px rgba(81,41,10,0.1),0px 2px 2px rgba(81,41,10,0.2);
+  display: none;
+}
+.page-section h3.section-subheading, .page-section .section-subheading.h3 {
+  font-size: 1rem;
+  font-weight: 400;
+  font-style: italic;
+  font-family: "Roboto Slab", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  margin-bottom: 4rem;
+}
+.page-section {
+  padding: 6rem 0;
+  background-color: rgb(45, 45, 45);
+}
+.page-section h2.section-heading, .page-section .section-heading.h2 {
+  font-size: 2.5rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+.page-section h3.section-subheading, .page-section .section-subheading.h3 {
+  font-size: 1rem;
+  font-weight: 400;
+  font-style: italic;
+  font-family: "Roboto Slab", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  margin-bottom: 4rem;
+}
+.page-section h2.section-heading, .page-section .section-heading.h2 {
+  font-size: 2.5rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+.page-section h3.section-subheading, .page-section .section-subheading.h3 {
+  font-size: 1rem;
+  font-weight: 400;
+  font-style: italic;
+  font-family: "Roboto Slab", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  margin-bottom: 4rem;
+}
+.timeline {
+  position: relative;
+  padding: 0;
+  list-style: none;
+}
+.timeline:before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 40px;
+  width: 2px;
+  margin-left: -1.5px;
+  content: "";
+  background-color: #e9ecef;
+}
+.timeline > li {
+  position: relative;
+  min-height: 50px;
+  margin-bottom: 50px;
+}
+.timeline > li:after, .timeline > li:before {
+  display: table;
+  content: " ";
+}
+.timeline > li:after {
+  clear: both;
+}
+.timeline > li .timeline-panel {
+  position: relative;
+  float: right;
+  width: 100%;
+  padding: 0 20px 0 100px;
+  text-align: left;
+}
+.timeline > li .timeline-panel:before {
+  right: auto;
+  left: -15px;
+  border-right-width: 15px;
+  border-left-width: 0;
+}
+.timeline > li .timeline-panel:after {
+  right: auto;
+  left: -14px;
+  border-right-width: 14px;
+  border-left-width: 0;
+}
+.timeline > li .timeline-image {
+  position: absolute;
+  z-index: 100;
+  left: 0;
+  width: 80px;
+  height: 80px;
+  margin-left: 0;
+  text-align: center;
+  color: white;
+  border: 7px solid #e9ecef;
+  border-radius: 100%;
+  background-color: #ffc800;
+}
+.timeline > li .timeline-image h4, .timeline > li .timeline-image .h4 {
+  font-size: 15px;
+  line-height: 14px;
+  margin-top: 12px;
+}
+.timeline > li.timeline-inverted > .timeline-panel {
+  float: right;
+  padding: 0 20px 0 100px;
+  text-align: left;
+}
+.timeline > li.timeline-inverted > .timeline-panel:before {
+  right: auto;
+  left: -15px;
+  border-right-width: 15px;
+  border-left-width: 0;
+}
+.timeline > li.timeline-inverted > .timeline-panel:after {
+  right: auto;
+  left: -14px;
+  border-right-width: 14px;
+  border-left-width: 0;
+}
+.timeline > li:last-child {
+  margin-bottom: 0;
+}
+.timeline .timeline-heading h4, .timeline .timeline-heading .h4 {
+  margin-top: 0;
+  color: inherit;
+}
+.timeline .timeline-heading h4.subheading, .timeline .timeline-heading .subheading.h4 {
+  text-transform: none;
+}
+.timeline .timeline-body > ul,
+.timeline .timeline-body > p {
+  margin-bottom: 0;
+}
+
+@media (min-width: 768px) {
+  .timeline:before {
+    left: 50%;
+  }
+  .timeline > li {
+    min-height: 100px;
+    margin-bottom: 100px;
+  }
+  .timeline > li .timeline-panel {
+    float: left;
+    width: 41%;
+    padding: 0 20px 20px 30px;
+    text-align: right;
+  }
+  .timeline > li .timeline-image {
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    margin-left: -50px;
+  }
+  .timeline > li .timeline-image h4, .timeline > li .timeline-image .h4 {
+    font-size: 13px;
+    line-height: 18px;
+    margin-top: 16px;
+  }
+  .timeline > li.timeline-inverted > .timeline-panel {
+    float: right;
+    padding: 0 30px 20px 20px;
+    text-align: left;
+  }
+}
+@media (min-width: 992px) {
+  .timeline > li {
+    min-height: 150px;
+  }
+  .timeline > li .timeline-panel {
+    padding: 0 20px 20px;
+  }
+  .timeline > li .timeline-image {
+    width: 150px;
+    height: 150px;
+    margin-left: -75px;
+  }
+  .timeline > li .timeline-image h4, .timeline > li .timeline-image .h4 {
+    font-size: 18px;
+    line-height: 26px;
+    margin-top: 30px;
+  }
+  .timeline > li.timeline-inverted > .timeline-panel {
+    padding: 0 20px 20px;
+  }
+}
+    </style>
+</head>
+
+<body>
+
+    <!-- Background Video -->
+    <video class="bg-video" playsinline autoplay muted loop>
+        <source src="/static/mp4/bg.mp4" type="video/mp4">
+    </video>
+
+    <!-- Header with form -->
+    <header class="masthead">
+        <div class="container">
+            <h1>Fraud URL Detection</h1>
+            <p>Enter the url to check it is safe or not.</p>
+            <form action="/" method="post">
+                <input type="text" name="url" id="url" placeholder="Enter URL" style="font-family: Arial, Helvetica, sans-serif;" required>
+                <br>
+                <button type="submit">Get Prediction</button>
+            </form>
+            <h3 id="prediction"></h3>
+            <button class="btn btn-warning" id="button2" style="display:none;" onclick="window.open('{{url}}')"
+                target="_blank">Still want to Continue</button>
+            <button class="btn btn-success" id="button1" style="display:none; " onclick="window.open('{{url}}')"
+                target="_blank">Continue</button>
+        </div>
+    </header>
+    <!-- About Section -->
+    <section class="page-section" id="about">
+      <div class="container">
+          <div class="text-center">
+              <h2 class="section-heading text-uppercase text-center">About</h2>
+              <h3 class="section-subheading text-muted text-center">History Of Phishing.</h3>
+          </div>
+          <ul class="timeline">
+              <li>
+                  <div class="timeline-image"><img class="rounded-circle img-fluid" src="static/img/about/1.jpg" alt="..."></div>
+                  <div class="timeline-panel">
+                      <div class="timeline-heading">
+                          <h4>1990s</h4>
+                          <h4 class="subheading">Origin and Early Methods</h4>
+                      </div>
+                      <div class="timeline-body"><p class="text-muted">Phishing emerged alongside the rise of the internet. <strong>Early attacks</strong> often targeted <strong>AOL users</strong> through <strong>social engineering tactics</strong>, where attackers impersonated <strong>AOL staff</strong> to <strong>steal login credentials</strong>.</p></div>
+                  </div>
+              </li>
+              <li class="timeline-inverted">
+                  <div class="timeline-image"><img class="rounded-circle img-fluid" src="static/img/about/2.jpg" alt="..."></div>
+                  <div class="timeline-panel">
+                      <div class="timeline-heading">
+                          <h4>2000s</h4>
+                          <h4 class="subheading">Rapid Growth with Email Phishing</h4>
+                      </div>
+                      <div class="timeline-body"><p class="text-muted">Phishing shifted to <strong>emails</strong>, with attackers sending <strong>fake messages mimicking banks, e-commerce sites, or online services</strong>. <strong>The first major phishing attack</strong> occurred in <strong>2004</strong>, targeting users of <strong>Citibank</strong>, and marked the rise of <strong>large-scale credential theft</strong>.</p></div>
+                  </div>
+              </li>
+              <li>
+                  <div class="timeline-image"><img class="rounded-circle img-fluid" src="static/img/about/3.jpg" alt="..."></div>
+                  <div class="timeline-panel">
+                      <div class="timeline-heading">
+                          <h4>2010s</h4>
+                          <h4 class="subheading">Sophistication and Targeted Attacks</h4>
+                      </div>
+                     <div class="timeline-body"><p class="text-muted">Phishing attacks became more advanced with <strong>spear-phishing</strong> (customized attacks on individuals) and <strong>whaling</strong> (targeting executives). Attackers exploited <strong>social media and cloud platforms</strong>. <strong>High-profile </strong>, such as the <strong>2016 DNC email hack</strong>, highlighted the <strong>dangers of phishing</strong>.</p></div>
+                  </div>
+              </li>
+              <li class="timeline-inverted">
+                  <div class="timeline-image"><img class="rounded-circle img-fluid" src="static/img/about/4.jpg" alt="..."></div>
+                  <div class="timeline-panel">
+                      <div class="timeline-heading">
+                          <h4>July 2020</h4>
+                          <h4 class="subheading">Automation and Evolving Tactics</h4>
+                      </div>
+                      <div class="timeline-body"><p class="text-muted">Modern phishing leverages <strong>AI and automation</strong> to enhance <strong>scalability and deception</strong>, such as <strong>deepfake attacks and fake websites</strong>. <strong>COVID-19 scams</strong> targeting <strong>health and financial information</strong> also surged, reflecting the <strong>adaptation of phishing to current events</strong>.</p></div>
+                  </div>
+              </li>
+              <li class="timeline-inverted">
+                  <div class="timeline-image">
+                      <h4>
+                          Be Part
+                          <br>
+                          Of Our
+                          <br>
+                          Journey!
+                      </h4>
+                  </div>
+              </li>
+          </ul>
+      </div>
+  </section>
+    <!-- Team Section -->
+    <div class="team-section">
+        <div class="container">
+            <h2>Our Amazing Team</h2>
+            <div class="row">
+                <div class="col-lg-4 team-member">
+                    <div class="circleborder">
+                        <img src="/static/img/ujwal.jpg" alt="Ananthula Ujwal">
+                    </div>
+                    <h4>Ananthula Ujwal</h4>
+                    <p>2451-22-749-004</p>
+                    <div class="social-icons">
+                        <a href="#!"><img src="/static/img/twitter.png" alt="Twitter"></a>
+                        <a href="#!"><img src="/static/img/facebook.png" alt="Facebook"></a>
+                        <a href="https://www.linkedin.com/in/ujwal-ananthula-8165a5337"><img src="/static/img/linkedin.png" alt="LinkedIn"></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 team-member">
+                    <div class="circleborder">
+                        <img src="/static/img/ranjith.jpg" alt="A. Ranjith Kumar">
+                    </div>
+                    <h4>A. Ranjith Kumar</h4>
+                    <p>2451-22-749-017</p>
+                    <div class="social-icons">
+                        <a href="#!"><img src="/static/img/twitter.png" alt="Twitter"></a>
+                        <a href="#!"><img src="/static/img/facebook.png" alt="Facebook"></a>
+                        <a href="www.linkedin.com/in/ranjith-kumar-abba-37341a280"><img src="/static/img/linkedin.png" alt="LinkedIn"></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 team-member">
+                    <div class="circleborder">
+                        <img src="/static/img/priya.jpg" alt="Priyanshu Kakularam">
+                    </div>
+                    <h4>Priyanshu Kakularam</h4>
+                    <p>2451-22-749-058</p>
+                    <div class="social-icons">
+                        <a href="#!"><img src="/static/img/twitter.png" alt="Twitter"></a>
+                        <a href="#!"><img src="/static/img/facebook.png" alt="Facebook"></a>
+                        <a href="https://www.linkedin.com/in/priyanshu-kakularam-28aa49257"><img src="/static/img/linkedin.png" target="_blank" alt="LinkedIn"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 ARK team. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript for the form logic -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script>
+        let x = '{{xx}}';
+        let num = x * 100;
+        if (0 <= x && x < 0.50) {
+            num = 100 - num;
+        }
+        let txtx = num.toString();
+        if (x <= 1 && x >= 0.50) {
+            var label = "Website is " + txtx + "% safe to use...";
+            document.getElementById("prediction").innerHTML = label;
+            document.getElementById("button1").style.display = "block";
+        } else if (0 <= x && x < 0.50) {
+            var label = " Website is " + txtx + "% unsafe to use...";
+            document.getElementById("prediction").innerHTML = label;
+            document.getElementById("button2").style.display = "block";
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,14 @@
+gunicorn==22.0.0
+beautifulsoup4==4.9.3
+googlesearch_python==1.0.1
+numpy==2.1.2
+pandas==2.2.3
+python_dateutil==2.8.2
+requests==2.25.1
+scikit_learn==1.5.2
+whois==1.20240129.2
+build
+setuptools>=58.0.0
+wheel
+Werkzeug<2.1.0
+Flask>=2.0.0
